@@ -29,8 +29,17 @@
 		;; individuo si sposta tra le stanze loc1 loc2 con le scale
 		(climb ?loc1 ?loc2)
 
-		;; Specifica un distributore ds nella stanza loc
+		;; Specifica un distributore
 		(distr ?ds)
+
+		;; Specifica una carta del bancomat
+		(card ?card)
+
+		;; Specifica un pin della carta
+		(pin ?pin)
+
+		;; Specifica l'associazione carta/pin
+		(card_pin ?card ?pin)
 
 		;;condizione che un individuo ha soldi (per prelevare, per inserire nel ditributore, per pagare,...)
 		(have_money ?ent)
@@ -54,6 +63,14 @@
 
 		;; Collega un ordine di un individuo con un particolare robot
 		(orderer ?indiv ?rob)
+
+		;; Condiziona un individuo, facendo in modo che per prelevare debba essere
+		;; in possesso della carta del bancomat
+		(have_card ?indiv ?card)
+
+		;; Condiziona ulteriormente un individuo a possedere, oltre alla carta,
+		;; anche il pin ad essa associato
+		(have_pin ?indiv ?pin)
  	)
 
 	;;azione che sposta un individuo tra due stanze dello stesso piano
@@ -182,14 +199,20 @@
 
 	;;man ritira i soldi da un bancomat in una stanza
 	(:action withdraw
-	    :parameters (?ent ?banc ?loc)
+	    :parameters (?ent ?card ?pin ?banc ?loc)
 	    :precondition (
 			and
 				(ent ?ent)
-			    (is_human ?ent)
-			    (not (have_money ?ent))
-			    (at ?ent ?loc)
 			    (bancomat ?banc ?loc)
+				(card ?card)
+				(pin ?pin)
+
+				(at ?ent ?loc)
+			    (is_human ?ent)
+				(have_card ?ent ?card)
+				(have_pin ?ent ?pin)
+				(card_pin ?card ?pin)
+				(not (have_money ?ent))
 	    )
 	    :effect (
 			and
