@@ -1,0 +1,133 @@
+
+;; Version LPG-v1.0
+;; Seed 49007180
+;; Command line: lpg -o RoboCafeDomain.pddl -f RoboCafeProblem-2.pddl -n 1 
+
+;;Problem:	RoboCafeProblem-2.pddl
+;;Search time: 3.360    Parsing time: 1.100    Mutex time: 0.620
+;;Actions: 121    Execution cost: 121.000    Duration: 74.000
+
+	 0.001:   (CLIMB MAN3 ST4 S24 S18)[1.000] ;; cost 1.000 
+	 1.002:   (MOVE MAN3 S18 S17)[1.000] ;; cost 1.000 
+	 2.003:   (MOVE MAN3 S17 S18)[1.000] ;; cost 1.000 
+	 3.004:   (MOVE MAN3 S18 S17)[1.000] ;; cost 1.000 
+	 4.005:   (MOVE MAN3 S17 S18)[1.000] ;; cost 1.000 
+	 5.006:   (CLIMB MAN3 ST3 S18 S12)[1.000] ;; cost 1.000 
+	 6.007:   (CLIMB MAN3 ST2 S12 S18)[1.000] ;; cost 1.000 
+	 7.008:   (MOVE MAN3 S18 S17)[1.000] ;; cost 1.000 
+	 8.009:   (MOVE MAN3 S17 S16)[1.000] ;; cost 1.000 
+	 9.010:   (MOVE MAN3 S16 S15)[1.000] ;; cost 1.000 
+	 10.011:   (MOVE MAN3 S15 S16)[1.000] ;; cost 1.000 
+	 11.012:   (MOVE MAN3 S16 S17)[1.000] ;; cost 1.000 
+	 12.013:   (MOVE MAN3 S17 S16)[1.000] ;; cost 1.000 
+	 13.014:   (MOVE MAN3 S16 S15)[1.000] ;; cost 1.000 
+	 14.015:   (MOVE MAN3 S15 S14)[1.000] ;; cost 1.000 
+	 15.016:   (MOVE MAN3 S14 S13)[1.000] ;; cost 1.000 
+	 16.017:   (MOVE MAN3 S13 S14)[1.000] ;; cost 1.000 
+	 17.018:   (MOVE MAN3 S14 S13)[1.000] ;; cost 1.000 
+	 18.019:   (MOVE MAN3 S13 S14)[1.000] ;; cost 1.000 
+	 19.020:   (MOVE MAN3 S14 S13)[1.000] ;; cost 1.000 
+	 20.021:   (ENTER MAN3 S13 L3)[1.000] ;; cost 1.000 
+	 21.022:   (PUSH_LIFT MAN3 L3 L4)[1.000] ;; cost 1.000 
+	 22.023:   (PUSH_LIFT MAN3 L4 L3)[1.000] ;; cost 1.000 
+	 23.024:   (EXIT MAN3 L3 S13)[1.000] ;; cost 1.000 
+	 24.025:   (ENTER MAN3 S13 L3)[1.000] ;; cost 1.000 
+	 25.026:   (EXIT MAN3 L3 S13)[1.000] ;; cost 1.000 
+	 26.027:   (MOVE MAN3 S13 S14)[1.000] ;; cost 1.000 
+	 27.028:   (MOVE MAN3 S14 S13)[1.000] ;; cost 1.000 
+	 28.029:   (MOVE MAN3 S13 S14)[1.000] ;; cost 1.000 
+	 29.030:   (MOVE MAN3 S14 S13)[1.000] ;; cost 1.000 
+	 30.031:   (ENTER MAN3 S13 L3)[1.000] ;; cost 1.000 
+	 31.032:   (PUSH_LIFT MAN3 L3 L2)[1.000] ;; cost 1.000 
+	 32.033:   (PUSH_LIFT MAN3 L2 L3)[1.000] ;; cost 1.000 
+	 33.034:   (PUSH_LIFT MAN3 L3 L2)[1.000] ;; cost 1.000 
+	 34.035:   (PUSH_LIFT MAN3 L2 L1)[1.000] ;; cost 1.000 
+	 0.036:   (MOVE MAN2 S15 S14)[1.000] ;; cost 1.000 
+	 35.037:   (PUSH_LIFT MAN3 L1 L2)[1.000] ;; cost 1.000 
+	 36.038:   (EXIT MAN3 L2 S7)[1.000] ;; cost 1.000 
+	 37.039:   (MOVE MAN3 S7 S8)[1.000] ;; cost 1.000 
+	 1.040:   (MOVE MAN2 S14 S13)[1.000] ;; cost 1.000 
+	 2.041:   (ENTER MAN2 S13 L3)[1.000] ;; cost 1.000 
+	 38.042:   (WITHDRAW MAN3 MONEY3 S8 BANC2)[1.000] ;; cost 1.000 
+	 39.043:   (MOVE MAN3 S8 S7)[1.000] ;; cost 1.000 
+	 40.044:   (ENTER MAN3 S7 L2)[1.000] ;; cost 1.000 
+	 41.045:   (EXIT MAN3 L2 S7)[1.000] ;; cost 1.000 
+	 42.046:   (ENTER MAN3 S7 L2)[1.000] ;; cost 1.000 
+	 43.047:   (EXIT MAN3 L2 S7)[1.000] ;; cost 1.000 
+	 44.048:   (ENTER MAN3 S7 L2)[1.000] ;; cost 1.000 
+	 45.049:   (EXIT MAN3 L2 S7)[1.000] ;; cost 1.000 
+	 46.050:   (ENTER MAN3 S7 L2)[1.000] ;; cost 1.000 
+	 47.051:   (EXIT MAN3 L2 S7)[1.000] ;; cost 1.000 
+	 3.052:   (PUSH_LIFT MAN2 L3 L2)[1.000] ;; cost 1.000 
+	 48.053:   (MOVE MAN3 S7 S8)[1.000] ;; cost 1.000 
+	 49.054:   (MOVE MAN3 S8 S9)[1.000] ;; cost 1.000 
+	 4.055:   (EXIT MAN2 L2 S7)[1.000] ;; cost 1.000 
+	 50.056:   (PAY ROBCAFE1 MAN3 MONEY3 S9)[1.000] ;; cost 1.000 
+	 5.057:   (MOVE MAN2 S7 S8)[1.000] ;; cost 1.000 
+	 6.058:   (WITHDRAW MAN2 MONEY2 S8 BANC2)[1.000] ;; cost 1.000 
+	 6.059:   (WITHDRAW MAN2 MONEY1 S8 BANC2)[1.000] ;; cost 1.000 
+	 6.060:   (WITHDRAW MAN2 MONEY3 S8 BANC2)[1.000] ;; cost 1.000 
+	 7.061:   (MOVE MAN2 S8 S9)[1.000] ;; cost 1.000 
+	 8.062:   (PAY ROBCAFE1 MAN2 MONEY1 S9)[1.000] ;; cost 1.000 
+	 9.063:   (MOVE MAN2 S9 S8)[1.000] ;; cost 1.000 
+	 10.064:   (MOVE MAN2 S8 S7)[1.000] ;; cost 1.000 
+	 11.065:   (ENTER MAN2 S7 L2)[1.000] ;; cost 1.000 
+	 12.066:   (PUSH_LIFT MAN2 L2 L1)[1.000] ;; cost 1.000 
+	 13.067:   (EXIT MAN2 L1 S1)[1.000] ;; cost 1.000 
+	 51.068:   (INSERT_MONEY ROBCAFE1 DS2 S9 MONEY3 THE1)[1.000] ;; cost 1.000 
+	 51.069:   (MOVE MAN3 S9 S8)[1.000] ;; cost 1.000 
+	 14.070:   (MOVE MAN2 S1 S2)[1.000] ;; cost 1.000 
+	 52.071:   (WITHDRAW MAN3 MONEY3 S8 BANC2)[1.000] ;; cost 1.000 
+	 53.072:   (MOVE MAN3 S8 S9)[1.000] ;; cost 1.000 
+	 15.073:   (MOVE MAN2 S2 S3)[1.000] ;; cost 1.000 
+	 54.074:   (PAY ROBCAFE1 MAN3 MONEY3 S9)[1.000] ;; cost 1.000 
+	 16.075:   (INSERT_MONEY MAN2 DS1 S3 MONEY2 CHOCOLATE1)[1.000] ;; cost 1.000 
+	 17.076:   (PUSH_DRINK MAN2 DS1 S3 CHOCOLATE1)[1.000] ;; cost 1.000 
+	 0.077:   (MOVE MAN1 S5 S6)[1.000] ;; cost 1.000 
+	 52.078:   (PUSH_DRINK ROBCAFE1 DS2 S9 THE1)[1.000] ;; cost 1.000 
+	 55.079:   (MOVE ROBCAFE1 S9 S8)[1.000] ;; cost 1.000 
+	 56.080:   (MOVE ROBCAFE1 S8 S7)[1.000] ;; cost 1.000 
+	 57.081:   (ENTER ROBCAFE1 S7 L2)[1.000] ;; cost 1.000 
+	 58.082:   (PUSH_LIFT ROBCAFE1 L2 L3)[1.000] ;; cost 1.000 
+	 59.083:   (PUSH_LIFT ROBCAFE1 L3 L4)[1.000] ;; cost 1.000 
+	 60.084:   (EXIT ROBCAFE1 L4 S19)[1.000] ;; cost 1.000 
+	 61.085:   (ENTER ROBCAFE1 S19 L4)[1.000] ;; cost 1.000 
+	 1.086:   (CLIMB MAN1 ST1 S6 S12)[1.000] ;; cost 1.000 
+	 62.087:   (EXIT ROBCAFE1 L4 S19)[1.000] ;; cost 1.000 
+	 63.088:   (MOVE ROBCAFE1 S19 S20)[1.000] ;; cost 1.000 
+	 64.089:   (MOVE ROBCAFE1 S20 S19)[1.000] ;; cost 1.000 
+	 2.090:   (CLIMB MAN1 ST2 S12 S18)[1.000] ;; cost 1.000 
+	 65.091:   (MOVE ROBCAFE1 S19 S20)[1.000] ;; cost 1.000 
+	 3.092:   (CLIMB MAN1 ST3 S18 S24)[1.000] ;; cost 1.000 
+	 4.093:   (MOVE MAN1 S24 S23)[1.000] ;; cost 1.000 
+	 66.094:   (MOVE ROBCAFE1 S20 S21)[1.000] ;; cost 1.000 
+	 5.095:   (MOVE MAN1 S23 S22)[1.000] ;; cost 1.000 
+	 67.096:   (MOVE ROBCAFE1 S21 S22)[1.000] ;; cost 1.000 
+	 68.097:   (DELIVER ROBCAFE1 MAN1 THE1 S22)[1.000] ;; cost 1.000 
+	 69.098:   (MOVE ROBCAFE1 S22 S23)[1.000] ;; cost 1.000 
+	 70.099:   (MOVE ROBCAFE1 S23 S24)[1.000] ;; cost 1.000 
+	 71.100:   (CLIMB ROBCAFE1 ST4 S24 S18)[1.000] ;; cost 1.000 
+	 55.101:   (MOVE MAN3 S9 S8)[1.000] ;; cost 1.000 
+	 56.102:   (WITHDRAW MAN3 MONEY4 S8 BANC2)[1.000] ;; cost 1.000 
+	 57.103:   (MOVE MAN3 S8 S9)[1.000] ;; cost 1.000 
+	 58.104:   (MOVE MAN3 S9 S10)[1.000] ;; cost 1.000 
+	 59.105:   (MOVE MAN3 S10 S11)[1.000] ;; cost 1.000 
+	 60.106:   (MOVE MAN3 S11 S12)[1.000] ;; cost 1.000 
+	 61.107:   (CLIMB MAN3 ST2 S12 S18)[1.000] ;; cost 1.000 
+	 62.108:   (CLIMB MAN3 ST3 S18 S24)[1.000] ;; cost 1.000 
+	 63.109:   (MOVE MAN3 S24 S23)[1.000] ;; cost 1.000 
+	 64.110:   (MOVE MAN3 S23 S24)[1.000] ;; cost 1.000 
+	 72.111:   (CLIMB ROBCAFE1 ST3 S18 S24)[1.000] ;; cost 1.000 
+	 18.112:   (MOVE MAN2 S3 S2)[1.000] ;; cost 1.000 
+	 73.113:   (PAY ROBCAFE1 MAN3 MONEY4 S24)[1.000] ;; cost 1.000 
+	 19.114:   (MOVE MAN2 S2 S1)[1.000] ;; cost 1.000 
+	 69.115:   (MOVE MAN1 S22 S21)[1.000] ;; cost 1.000 
+	 70.116:   (MOVE MAN1 S21 S22)[1.000] ;; cost 1.000 
+	 71.117:   (MOVE MAN1 S22 S23)[1.000] ;; cost 1.000 
+	 20.118:   (PAY ROBCAFE2 MAN2 MONEY3 S1)[1.000] ;; cost 1.000 
+	 73.119:   (PAY ROBCAFE1 MAN3 MONEY5 S24)[1.000] ;; cost 1.000 
+	 72.120:   (MOVE MAN1 S23 S24)[1.000] ;; cost 1.000 
+	 73.121:   (PAY ROBCAFE1 MAN1 MONEY2 S24)[1.000] ;; cost 1.000 
+
+Time 5100
+

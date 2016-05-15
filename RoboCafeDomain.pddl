@@ -1,0 +1,238 @@
+(define (domain robotCafeX)
+	(:requirements :strips :equality :typing)
+	(:types Robot Deliever Coffe)
+ 	(:predicates
+		;; connette due stanze sullo stesso piano
+		(conn ?loc1 ?loc2)
+
+		;;connette gli ascensori
+		(asc ?l1 ?l2)
+
+		;;condizione per prendere l'ascensore l al piano loc
+		(take_asc ?l ?loc)
+
+		;;condizione che un ente si trova in una stanza
+		(at ?indiv ?loc)
+
+		;;specifica che ?indiv e' un ente (rob o man)
+		(ent ?indiv)
+
+		;;oggetto money (money1, money2...)
+		(money ?money)
+
+		;;oggetto drink (the1, coffe1, ...)
+  		(drink ?drink)
+
+		;;condizione per salire le scale st dalla stanza loc
+		(stairs ?st ?loc)
+
+		;;specifica il bancomat banc nella stanza loc
+		(bancomat ?banc ?loc)
+
+		;; individuo si sposta tra le stanze loc1 loc2 con le scale
+		(climb ?loc1 ?loc2)
+
+		;;specifica un distributore ds nella stanza loc
+		(distr ?ds)
+
+		;;condizione che un individuo ha soldi (per prelevare, per inserire nel ditributore, per pagare,...)
+		(have_money ?ent ?money)
+
+		;;condizione che un distributore ha bevanda
+		(have_drink ?ds ?drink)
+
+		;;condizione con cui un individuo prende il drink (goal)
+		;;il goal si deve aggiornare con l'aggiunta dell'interazione man robot
+		(take_drink ?ent ?drink)
+
+		;;condizione che distingue individui robot da individui man
+		(is_human ?indiv)
+
+		(init_distr_operation ?indiv)
+
+		(ordered_drink ?ent ?drink)
+ 	)
+
+	;;azione che sposta un individuo tra due stanze dello stesso piano
+	(:action move
+		:parameters (?indiv ?loc1 ?loc2)
+		:precondition (
+			and
+				(ent ?indiv)
+       			(at ?indiv ?loc1)
+       			(conn ?loc1 ?loc2)
+		)
+   		:effect (
+			and
+				(at ?indiv ?loc2)
+			 	(not (at ?indiv ?loc1))
+		)
+  	)
+
+	;;azione che sposta un individuo tra due stanze tramite le scale
+	(:action climb
+		:parameters (?indiv ?st ?loc1 ?loc2)
+		:precondition (
+			and
+				(ent ?indiv)
+	   			(at ?indiv ?loc1)
+				(stairs ?st ?loc1)
+				(climb ?loc1 ?loc2)
+		)
+		:effect (
+			and
+		        (at ?indiv ?loc2)
+		        (not (at ?indiv ?loc1))
+		)
+	)
+
+	;;individuo entra in ascensore
+	(:action enter
+		:parameters (?indiv ?loc ?l)
+		:precondition (
+			and
+				(ent ?indiv)
+		        (take_asc ?l ?loc)
+		        (at ?indiv ?loc)
+		)
+		:effect (
+			and
+		        (at ?indiv ?l)
+		        (not (at ?indiv ?loc))
+		)
+ 	)
+
+	;;seleziona il piano in cui scendere (seleziona l'ascensore che e' collegato ad un piano)
+	(:action push_lift
+		:parameters (?indiv ?l1 ?l2)
+		:precondition (
+			and
+    			(ent ?indiv)
+		        (at ?indiv ?l1)
+    			(asc ?l1 ?l2)
+		)
+		:effect (
+			and
+    			(at ?indiv ?l2)
+		        (not (at ?indiv ?l1))
+		)
+	)
+
+	;;esce dall'ascensore nella stanza loc
+	(:action exit
+		:parameters (?indiv ?l ?loc)
+		:precondition (
+			and
+				(ent ?indiv )
+				(take_asc ?l ?loc)
+				(at ?indiv ?l)
+		)
+		:effect (
+			and
+		        (at ?indiv ?loc)
+				(not (at ?indiv ?l))
+		)
+	)
+
+	;;inserisce soldi nel ditributore
+	(:action insert_money
+		:parameters (?ent ?ds ?loc ?money ?drink)
+		:precondition (
+			and
+				(ent ?ent)
+				(distr ?ds)
+				(money ?money)
+				(at ?ds ?loc)
+				(at ?ent ?loc)
+				(have_money ?ent ?money)
+				(have_drink ?ds ?drink)
+				(not (init_distr_operation ?ent))
+    	)
+    	:effect (
+			and
+				(ordered_drink ?ent ?drink)
+				(init_distr_operation ?ent)
+				(have_money ?ds ?money)
+		        (not (have_money ?ent ?money))
+    	)
+	)
+
+	;;seleziona il drink da prendere
+	(:action push_drink
+	    :parameters (?ent ?ds ?loc ?drink)
+	    :precondition (
+			and
+				(ent ?ent)
+	            (distr ?ds)
+				(at ?ds ?loc)
+				(at ?ent ?loc)
+				(init_distr_operation ?ent)
+				(ordered_drink ?ent ?drink)
+	    )
+	    :effect (
+			and
+				(not (init_distr_operation ?ent))
+	            (take_drink ?ent ?drink)
+		    	(not(have_drink ?ds ?drink))
+				(not (ordered_drink ?ent ?drink))
+	    )
+	)
+
+	;;man ritira i soldi da un bancomat in una stanza
+	(:action withdraw
+	    :parameters (?ent ?money ?loc ?banc)
+	    :precondition (
+			and
+				(ent ?ent)
+			    (is_human ?ent)
+			    (not (have_money ?ent ?money))
+			    (at ?ent ?loc)
+			    (bancomat ?banc ?loc)
+	    )
+	    :effect (
+			and
+		    	(have_money ?ent ?money)
+	    )
+	)
+
+	;;man da soldi a robot senza soldi
+	(:action pay
+	   :parameters (?rob ?man ?money ?loc)
+	   :precondition (
+	   		and
+				(at ?rob ?loc)
+				(at ?man ?loc)
+				(is_human ?man)
+				(not (is_human ?rob))
+				(not (have_money ?rob ?money))
+				(have_money ?man ?money)
+	   )
+	   :effect (
+	   		and
+				(have_money ?rob ?money)
+				(not (have_money ?man ?money))
+		)
+	)
+
+	(:action deliver
+		:parameters (?rob ?man ?drink ?loc)
+		:precondition (
+			and
+				(ent ?rob)
+				(ent ?man)
+				(is_human ?man)
+				(not (is_human ?rob))
+
+				(at ?rob ?loc)
+				(at ?man ?loc)
+
+				(take_drink ?rob ?drink)
+				(not (take_drink ?man ?drink))
+		)
+		:effect (
+			and
+				(take_drink ?man ?drink)
+				(not (take_drink ?rob ?drink))
+		)
+	)
+)
