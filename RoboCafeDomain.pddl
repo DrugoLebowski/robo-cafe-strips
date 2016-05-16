@@ -2,28 +2,32 @@
 	(:requirements :strips :equality :typing)
 	(:types Robot Deliever Coffe)
  	(:predicates
-		;; connette due stanze sullo stesso piano
+		;; Specifica la connessione tra due stanze (vero sse loc1 connesso con loc2)
 		(conn ?loc1 ?loc2)
 
-		;;connette gli ascensori
+		;; Specifica la connessione tra due ascensori (vero sse l1 conn l2)
 		(asc ?l1 ?l2)
 
-		;;condizione per prendere l'ascensore l al piano loc
+		;; Specifica che un ascensore è possibile prenderlo in una specifica
+		;; posizione (vero sse ?l è posizionato in ?loc)
 		(take_asc ?l ?loc)
 
-		;;condizione che un ente si trova in una stanza
+		;; Specifica che un'entità è posizionata in una cerca locazione
+		;; (vero sse ?indiv è nella posizione ?loc)
 		(at ?indiv ?loc)
 
-		;;specifica che ?indiv e' un ente (rob o man)
+		;; Specifica che un oggetto è di tipo ent
+		;; (vero sse ?indiv è un'entità)
 		(ent ?indiv)
 
-		;;oggetto money (money1, money2...)
+		;; Specifica che un oggetto è di tipo money
 		(money ?money)
 
-		;;oggetto drink (the1, coffe1, ...)
+		;; Specifica che un oggetto è di tipo drink
   		(drink ?drink)
 
-		;;condizione per salire le scale st dalla stanza loc
+		;; Specifica che un oggetto di tipo scale si trova nella posizione ?loc
+		;; (vero sse ?st se è di tipo stairs e se si trovano nella posizione ?loc)
 		(stairs ?st ?loc)
 
 		;;specifica il bancomat banc nella stanza loc
@@ -34,6 +38,15 @@
 
 		;;specifica un distributore ds nella stanza loc
 		(distr ?ds)
+
+		;; Specifica una carta del bancomat
+		(card ?card)
+
+		;; Specifica un pin della carta
+		(pin ?pin)
+
+		;; Specifica l'associazione carta/pin
+		(card_pin ?card ?pin)
 
 		;;condizione che un individuo ha soldi (per prelevare, per inserire nel ditributore, per pagare,...)
 		(have_money ?ent ?money)
@@ -48,12 +61,26 @@
 		;;condizione che distingue individui robot da individui man
 		(is_human ?indiv)
 
-		(init_distr_operation ?indiv)
+		;; Condiziona un distributore dall'essere occupato o no
+		(occupied_distr ?ds)
 
+		;; Collega un drink con l'entità che l'ha ordinato
 		(ordered_drink ?ent ?drink)
+
+		;; Collega un ordine di un individuo con un particolare robot
+		(orderer ?indiv ?rob)
+
+		;; Condiziona un individuo, facendo in modo che per prelevare debba essere
+		;; in possesso della carta del bancomat
+		(have_card ?indiv ?card)
+
+		;; Condiziona ulteriormente un individuo a possedere, oltre alla carta,
+		;; anche il pin ad essa associato
+		(have_pin ?indiv ?pin)
  	)
 
-	;;azione che sposta un individuo tra due stanze dello stesso piano
+	;; Azione che permette lo spostamento di un'entità (uomo/robot)
+	;; tra due stanze dello stesso piano
 	(:action move
 		:parameters (?indiv ?loc1 ?loc2)
 		:precondition (
@@ -69,7 +96,8 @@
 		)
   	)
 
-	;;azione che sposta un individuo tra due stanze tramite le scale
+	;; Azione che permette lo spostamento di un individuo tra due stanze
+	;; tramite le scale
 	(:action climb
 		:parameters (?indiv ?st ?loc1 ?loc2)
 		:precondition (
@@ -86,7 +114,7 @@
 		)
 	)
 
-	;;individuo entra in ascensore
+	;; Azione che permette ad un'entità (uomo/robot) di entrare in ascensore
 	(:action enter
 		:parameters (?indiv ?loc ?l)
 		:precondition (
@@ -102,7 +130,8 @@
 		)
  	)
 
-	;;seleziona il piano in cui scendere (seleziona l'ascensore che e' collegato ad un piano)
+	;; Azione che permette ad un'entità (uomo/robot) di selezionare
+	;; il piano in cui scendere (seleziona l'ascensore che è collegato ad un piano)
 	(:action push_lift
 		:parameters (?indiv ?l1 ?l2)
 		:precondition (
@@ -118,7 +147,8 @@
 		)
 	)
 
-	;;esce dall'ascensore nella stanza loc
+	;; Azione che permette ad un'entità di uscire dall'ascensore nella stanza
+	;; selezionata precedentemente
 	(:action exit
 		:parameters (?indiv ?l ?loc)
 		:precondition (
@@ -134,7 +164,8 @@
 		)
 	)
 
-	;;inserisce soldi nel ditributore
+	;; Azione che permette ad un'entità (uomo/robot) di inserire i soldi nel
+	;; distributore e sceglie la bevanda
 	(:action insert_money
 		:parameters (?ent ?ds ?loc ?money ?drink)
 		:precondition (
@@ -146,18 +177,20 @@
 				(at ?ent ?loc)
 				(have_money ?ent ?money)
 				(have_drink ?ds ?drink)
-				(not (init_distr_operation ?ent))
+				(not (occupied_distr ?ds))
     	)
     	:effect (
 			and
+				(at ?ent ?ds)
 				(ordered_drink ?ent ?drink)
-				(init_distr_operation ?ent)
+				(occupied_distr ?ds)
 				(have_money ?ds ?money)
 		        (not (have_money ?ent ?money))
     	)
 	)
 
-	;;seleziona il drink da prendere
+	;; Azione che permette ad un'entità (uomo/robot) prende il drink ordinato
+	;; precedentemente dal distributore
 	(:action push_drink
 	    :parameters (?ent ?ds ?loc ?drink)
 	    :precondition (
@@ -165,37 +198,48 @@
 				(ent ?ent)
 	            (distr ?ds)
 				(at ?ds ?loc)
-				(at ?ent ?loc)
-				(init_distr_operation ?ent)
+				(at ?ent ?ds)
+				(occupied_distr ?ds)
 				(ordered_drink ?ent ?drink)
 	    )
 	    :effect (
 			and
-				(not (init_distr_operation ?ent))
+				(at ?ent ?loc)
+				(not (at ?ent ?ds))
+				(not (occupied_distr ?ds))
 	            (take_drink ?ent ?drink)
-		    	(not(have_drink ?ds ?drink))
+		    	(not (have_drink ?ds ?drink))
 				(not (ordered_drink ?ent ?drink))
 	    )
 	)
 
-	;;man ritira i soldi da un bancomat in una stanza
+	;; Azione che permette ad un uomo di ritirare i soldi da un bancomat
 	(:action withdraw
-	    :parameters (?ent ?money ?loc ?banc)
+	    :parameters (?ent ?money ?card ?pin ?banc ?loc)
 	    :precondition (
 			and
 				(ent ?ent)
+				(card ?card)
+				(pin ?pin)
+				(money ?money)
+				(bancomat ?banc ?loc)
+
+				(at ?ent ?loc)
 			    (is_human ?ent)
+				(have_card ?ent ?card)
+				(have_pin ?ent ?pin)
+				(card_pin ?card ?pin)
+				(have_money ?banc ?money)
 			    (not (have_money ?ent ?money))
-			    (at ?ent ?loc)
-			    (bancomat ?banc ?loc)
 	    )
 	    :effect (
 			and
-		    	(have_money ?ent ?money)
+		    		 (have_money ?ent ?money)
+				(not (have_money ?banc ?money))
 	    )
 	)
 
-	;;man da soldi a robot senza soldi
+	;; Azione che permette ad un uomo di dare i soldi ad un robot che non ne ha
 	(:action pay
 	   :parameters (?rob ?man ?money ?loc)
 	   :precondition (
@@ -206,14 +250,17 @@
 				(not (is_human ?rob))
 				(not (have_money ?rob ?money))
 				(have_money ?man ?money)
+				(not (orderer ?man ?rob))
 	   )
 	   :effect (
 	   		and
+				(orderer ?man ?rob)
 				(have_money ?rob ?money)
 				(not (have_money ?man ?money))
 		)
 	)
 
+	;; Azione che permette ad un robot di consegnare il prodotto ordinato da un uomo
 	(:action deliver
 		:parameters (?rob ?man ?drink ?loc)
 		:precondition (
@@ -228,11 +275,14 @@
 
 				(take_drink ?rob ?drink)
 				(not (take_drink ?man ?drink))
+
+				(orderer ?man ?rob)
 		)
 		:effect (
 			and
 				(take_drink ?man ?drink)
 				(not (take_drink ?rob ?drink))
+				(not (orderer ?man ?rob))
 		)
 	)
 )
