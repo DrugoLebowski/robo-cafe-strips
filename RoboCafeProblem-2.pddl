@@ -55,6 +55,9 @@
         ;; Definisco i pin
         pin1
         pin2
+
+        ;; Definisco i comandi
+        command
     )
 
     (:init
@@ -85,6 +88,12 @@
         (conn s22 s23) (conn s23 s22)
         (conn s23 s24) (conn s24 s23)
 
+        ;; Dichiara che una locazione è una stanza
+        (floor s1) (floor s2) (floor s3) (floor s4) (floor s5) (floor s6)
+        (floor s7) (floor s8) (floor s9) (floor s10) (floor s11) (floor s12)
+        (floor s13) (floor s14) (floor s15) (floor s16) (floor s17) (floor s18)
+        (floor s19) (floor s20) (floor s21) (floor s22) (floor s23) (floor s24)
+
         ;; Dichiara gli oggetti di tipo ascensore e la loro posizione
     	(take_asc l1 s1)  (take_asc l2 s7)
         (take_asc l3 s13) (take_asc l4 s19)
@@ -95,6 +104,7 @@
         (asc l3 l4) (asc l4 l3)
         (asc l4 l1) (asc l1 l4)
         (asc l3 l1) (asc l1 l3)
+        (asc l4 l2) (asc l2 l4)
 
         ;; Dichiaro gli oggetti di tipo scale e la loro posizione
     	(stairs st1 s6)  (stairs st2 s12)
@@ -128,12 +138,15 @@
         (money money7)
         (money money8)
 
+        ;; Definisco gli oggetti di tipo comando
+        (command command)
+
         ;; Dichiaro i drink
     	(drink the1) (drink coffee1) (drink chocolate1)
         (drink the2) (drink coffee2)
 
         ;; Dichiari chi ha i soldi (e quali soldi)
-    	     (have_money man1 money1)       (have_money man1 money2)
+        (not (have_money man1 money1))      (have_money man1 money2)
         (not (have_money man1 money3)) (not (have_money man1 money4))
         (not (have_money man1 money5)) (not (have_money man1 money6))
         (not (have_money man1 money7)) (not (have_money man1 money8))
@@ -143,7 +156,7 @@
         (not (have_money man2 money5)) (not (have_money man2 money6))
         (not (have_money man2 money7)) (not (have_money man2 money8))
 
-    	(not (have_money robCafe1 money1)) (not (have_money robCafe1 money2))
+        (not (have_money robCafe1 money1)) (not (have_money robCafe1 money2))
         (not (have_money robCafe1 money3)) (not (have_money robCafe1 money4))
         (not (have_money robCafe1 money5)) (not (have_money robCafe1 money6))
         (not (have_money robCafe1 money7)) (not (have_money robCafe1 money8))
@@ -189,14 +202,23 @@
         ;; Dichiaro la possessione dei pin
         (have_pin man1 pin1)
         (have_pin man2 pin2)
+
+        (not (can_order man1)) (can_order man2)
+        (not (can_order robCafe1))
+
+        (not (commanded_by robCafe1 man1))
+
+        (available robCafe1)
+
+        (not (lock man1)) (not (lock man2))
+        (not (lock robCafe1))
     )
 
     (:goal
         (and
-            (take_drink man1 chocolate1)
+            (take_drink man1 the1)
             (take_drink man1 coffee1)
             (take_drink man1 coffee2)
-            (take_drink man2 the1)
             (take_drink man2 the2)
         )
     )

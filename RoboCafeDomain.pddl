@@ -2,6 +2,9 @@
 	(:requirements :strips :equality :typing)
 	(:types Robot Deliever Coffe)
  	(:predicates
+		;; Specifica che una locazione è una stanza
+		(floor ?loc)
+
 		;; Specifica la connessione tra due stanze (vero sse loc1 connesso con loc2)
 		(conn ?loc1 ?loc2)
 
@@ -45,6 +48,9 @@
 		;; Specifica un pin della carta
 		(pin ?pin)
 
+		;; Specifica che un oggetto è di tipo command
+		(command ?command)
+
 		;; Specifica l'associazione carta/pin
 		(card_pin ?card ?pin)
 
@@ -77,6 +83,30 @@
 		;; Condiziona ulteriormente un individuo a possedere, oltre alla carta,
 		;; anche il pin ad essa associato
 		(have_pin ?indiv ?pin)
+
+		;; Condiziona l'entità che possono prendere le bibite dal distributore
+		(have_command ?ent ?command)
+
+		;; Condiziona il robot dal comando dell'uomo che ha richiesto una bevanda
+		(commanded_by ?rob ?man)
+
+		;; Condiziona la disponibilità del robot
+		(available ?rob)
+
+		;; Condiziona il pagamento tra uomo e robot
+		(have_paid ?man ?rob)
+
+		;; Condiziona la consegna della bevanda da parte del robot all'uomo
+		(delivered ?rob ?man)
+
+		;; Condiziona le entità che possono ordinare
+		(can_order ?ent)
+
+		;; Condiziona il pagamento
+		(paid ?ent)
+
+		;; Condiziona un'entità a restare in una posizione
+		(lock ?ent)
  	)
 
 	;; Azione che permette lo spostamento di un'entità (uomo/robot)
@@ -88,6 +118,7 @@
 				(ent ?indiv)
        			(at ?indiv ?loc1)
        			(conn ?loc1 ?loc2)
+				(not (lock ?indiv))
 		)
    		:effect (
 			and
@@ -106,6 +137,7 @@
 	   			(at ?indiv ?loc1)
 				(stairs ?st ?loc1)
 				(climb ?loc1 ?loc2)
+				(not (lock ?indiv))
 		)
 		:effect (
 			and
@@ -122,6 +154,7 @@
 				(ent ?indiv)
 		        (take_asc ?l ?loc)
 		        (at ?indiv ?loc)
+				(not (lock ?indiv))
 		)
 		:effect (
 			and
@@ -164,6 +197,8 @@
 		)
 	)
 
+
+
 	;; Azione che permette ad un'entità (uomo/robot) di inserire i soldi nel
 	;; distributore e sceglie la bevanda
 	(:action insert_money
@@ -173,19 +208,19 @@
 				(ent ?ent)
 				(distr ?ds)
 				(money ?money)
-				(at ?ds ?loc)
-				(at ?ent ?loc)
+
+				(at ?ds ?loc) (at ?ent ?loc)
 				(have_money ?ent ?money)
 				(have_drink ?ds ?drink)
 				(not (occupied_distr ?ds))
+				(can_order ?ent)
     	)
     	:effect (
 			and
-				(at ?ent ?ds)
-				(ordered_drink ?ent ?drink)
+				(at ?ent ?ds) (not (at ?ent ?loc))
 				(occupied_distr ?ds)
-				(have_money ?ds ?money)
-		        (not (have_money ?ent ?money))
+				(have_money ?ds ?money) (not (have_money ?ent ?money))
+				(ordered_drink ?ent ?drink)
     	)
 	)
 
@@ -204,8 +239,7 @@
 	    )
 	    :effect (
 			and
-				(at ?ent ?loc)
-				(not (at ?ent ?ds))
+				(at ?ent ?loc) (not (at ?ent ?ds))
 				(not (occupied_distr ?ds))
 	            (take_drink ?ent ?drink)
 		    	(not (have_drink ?ds ?drink))
@@ -240,23 +274,43 @@
 	)
 
 	;; Azione che permette ad un uomo di dare i soldi ad un robot che non ne ha
-	(:action pay
-	   :parameters (?rob ?man ?money ?loc)
+	(:action pay_before
+	   :parameters (?man ?rob ?money ?loc)
 	   :precondition (
 	   		and
-				(at ?rob ?loc)
-				(at ?man ?loc)
-				(is_human ?man)
-				(not (is_human ?rob))
-				(not (have_money ?rob ?money))
-				(have_money ?man ?money)
-				(not (orderer ?man ?rob))
+				(at ?rob ?loc) (at ?man ?loc)
+				(is_human ?man) (not (is_human ?rob))
+				(have_money ?man ?money) (not (have_money ?rob ?money))
+
+				(not (delivered ?rob ?man))
+				(commanded_by ?rob ?man)
 	   )
 	   :effect (
 	   		and
-				(orderer ?man ?rob)
-				(have_money ?rob ?money)
-				(not (have_money ?man ?money))
+				(have_money ?rob ?money) (not (have_money ?man ?money))
+				(paid ?man)
+		)
+	)
+
+	(:action pay_after
+	   :parameters (?man ?rob ?money ?loc)
+	   :precondition (
+	   		and
+				(ent ?rob) (ent ?man)
+				(is_human ?man)	(not (is_human ?rob))
+
+				(at ?rob ?loc) (at ?man ?loc)
+				(have_money ?man ?money) (not (have_money ?rob ?money))
+
+				(not (commanded_by ?rob ?man))
+				(available ?rob)
+				(delivered ?rob ?man)
+				(not (paid ?man))
+	   )
+	   :effect (
+	   		and
+				(not (delivered ?rob ?man))
+				(have_money ?rob ?money) (not (have_money ?man ?money))
 		)
 	)
 
@@ -265,24 +319,44 @@
 		:parameters (?rob ?man ?drink ?loc)
 		:precondition (
 			and
-				(ent ?rob)
-				(ent ?man)
-				(is_human ?man)
-				(not (is_human ?rob))
+				(ent ?rob) (ent ?man)
+				(is_human ?man) (not (is_human ?rob))
 
-				(at ?rob ?loc)
-				(at ?man ?loc)
-
-				(take_drink ?rob ?drink)
-				(not (take_drink ?man ?drink))
-
-				(orderer ?man ?rob)
+				(at ?rob ?loc) (at ?man ?loc)
+				(take_drink ?rob ?drink) (not (take_drink ?man ?drink))
+				(commanded_by ?rob ?man)
+				(not (available ?rob))
+				(not (delivered ?rob ?man))
 		)
 		:effect (
 			and
-				(take_drink ?man ?drink)
-				(not (take_drink ?rob ?drink))
-				(not (orderer ?man ?rob))
+				(delivered ?rob ?man)
+				(take_drink ?man ?drink) (not (take_drink ?rob ?drink))
+				(not (commanded_by ?rob ?man))
+				(available ?rob)
+				(not (can_order ?rob))
+		)
+	)
+
+	(:action call_robot
+		:parameters (?man ?rob ?money ?loc)
+		:precondition (
+			and
+				(floor ?loc)
+				(ent ?man) (ent ?rob)
+				(is_human ?man) (not (is_human ?rob))
+
+				(at ?man ?loc)
+				(not (can_order ?man)) (not (can_order ?rob))
+				(available ?rob) (have_money ?man ?money)
+		)
+		:effect (
+			and
+				(lock ?man)
+				(commanded_by ?rob ?man)
+				(not (available ?rob))
+				(can_order ?rob)
+				(not (delivered ?rob ?man))
 		)
 	)
 )
