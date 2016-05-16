@@ -1,9 +1,9 @@
 (define (domain robotCafeX)
-	(:requirements :strips :equality :typing)
+	(:requirements Strips :equality :typing)
 	(:types Robot Deliever Coffe)
  	(:predicates
 		;; Specifica che una locazione è una stanza
-		(floor ?loc)
+		(room ?loc)
 
 		;; Specifica la connessione tra due stanze (vero sse loc1 connesso con loc2)
 		(conn ?loc1 ?loc2)
@@ -107,6 +107,8 @@
 
 		;; Condiziona un'entità a restare in una posizione
 		(lock ?ent)
+
+		(init_order ?man ?rob)
  	)
 
 	;; Azione che permette lo spostamento di un'entità (uomo/robot)
@@ -116,6 +118,8 @@
 		:precondition (
 			and
 				(ent ?indiv)
+				(room ?loc1) (room ?loc2)
+
        			(at ?indiv ?loc1)
        			(conn ?loc1 ?loc2)
 				(not (lock ?indiv))
@@ -134,8 +138,10 @@
 		:precondition (
 			and
 				(ent ?indiv)
-	   			(at ?indiv ?loc1)
+				(room ?loc1) (room ?loc2)
 				(stairs ?st ?loc1)
+
+	   			(at ?indiv ?loc1)
 				(climb ?loc1 ?loc2)
 				(not (lock ?indiv))
 		)
@@ -152,6 +158,7 @@
 		:precondition (
 			and
 				(ent ?indiv)
+				(room ?loc)
 		        (take_asc ?l ?loc)
 		        (at ?indiv ?loc)
 				(not (lock ?indiv))
@@ -187,6 +194,7 @@
 		:precondition (
 			and
 				(ent ?indiv )
+				(room ?loc)
 				(take_asc ?l ?loc)
 				(at ?indiv ?l)
 		)
@@ -208,6 +216,7 @@
 				(ent ?ent)
 				(distr ?ds)
 				(money ?money)
+				(room ?loc)
 
 				(at ?ds ?loc) (at ?ent ?loc)
 				(have_money ?ent ?money)
@@ -232,8 +241,9 @@
 			and
 				(ent ?ent)
 	            (distr ?ds)
-				(at ?ds ?loc)
-				(at ?ent ?ds)
+				(room ?loc)
+
+				(at ?ds ?loc) (at ?ent ?ds)
 				(occupied_distr ?ds)
 				(ordered_drink ?ent ?drink)
 	    )
@@ -257,6 +267,7 @@
 				(pin ?pin)
 				(money ?money)
 				(bancomat ?banc ?loc)
+				(room ?loc)
 
 				(at ?ent ?loc)
 			    (is_human ?ent)
@@ -278,17 +289,19 @@
 	   :parameters (?man ?rob ?money ?loc)
 	   :precondition (
 	   		and
-				(at ?rob ?loc) (at ?man ?loc)
-				(is_human ?man) (not (is_human ?rob))
-				(have_money ?man ?money) (not (have_money ?rob ?money))
+				(room ?loc)
+				(money ?money)
+				(ent ?man) (ent ?rob)
 
+				(is_human ?man) (not (is_human ?rob))
+				(at ?rob ?loc) (at ?man ?loc)
+				(have_money ?man ?money) (not (have_money ?rob ?money))
 				(not (delivered ?rob ?man))
-				(commanded_by ?rob ?man)
+				(init_order ?man ?rob)
 	   )
 	   :effect (
 	   		and
-				(have_money ?rob ?money) (not (have_money ?man ?money))
-				(paid ?man)
+				(not (have_money ?man ?money)) (have_money ?rob ?money)
 		)
 	)
 
@@ -296,19 +309,19 @@
 	   :parameters (?man ?rob ?money ?loc)
 	   :precondition (
 	   		and
-				(ent ?rob) (ent ?man)
-				(is_human ?man)	(not (is_human ?rob))
+				(room ?loc)
+				(money ?money)
+				(ent ?man) (ent ?rob)
 
+				(is_human ?man)	(not (is_human ?rob))
 				(at ?rob ?loc) (at ?man ?loc)
 				(have_money ?man ?money) (not (have_money ?rob ?money))
-
-				(not (commanded_by ?rob ?man))
-				(available ?rob)
+				(not (init_order ?man ?rob))
 				(delivered ?rob ?man)
-				(not (paid ?man))
-	   )
+   		)
 	   :effect (
 	   		and
+				(available ?rob)
 				(not (delivered ?rob ?man))
 				(have_money ?rob ?money) (not (have_money ?man ?money))
 		)
@@ -319,22 +332,23 @@
 		:parameters (?rob ?man ?drink ?loc)
 		:precondition (
 			and
+				(room ?loc)
+				(drink ?drink)
 				(ent ?rob) (ent ?man)
 				(is_human ?man) (not (is_human ?rob))
 
 				(at ?rob ?loc) (at ?man ?loc)
 				(take_drink ?rob ?drink) (not (take_drink ?man ?drink))
-				(commanded_by ?rob ?man)
 				(not (available ?rob))
 				(not (delivered ?rob ?man))
+				(init_order ?man ?rob)
 		)
 		:effect (
 			and
 				(delivered ?rob ?man)
 				(take_drink ?man ?drink) (not (take_drink ?rob ?drink))
-				(not (commanded_by ?rob ?man))
-				(available ?rob)
 				(not (can_order ?rob))
+				(not (init_order ?man ?rob))
 		)
 	)
 
@@ -342,7 +356,7 @@
 		:parameters (?man ?rob ?money ?loc)
 		:precondition (
 			and
-				(floor ?loc)
+				(room ?loc)
 				(ent ?man) (ent ?rob)
 				(is_human ?man) (not (is_human ?rob))
 
@@ -353,10 +367,10 @@
 		:effect (
 			and
 				(lock ?man)
-				(commanded_by ?rob ?man)
 				(not (available ?rob))
 				(can_order ?rob)
 				(not (delivered ?rob ?man))
+				(init_order ?man ?rob)
 		)
 	)
 )

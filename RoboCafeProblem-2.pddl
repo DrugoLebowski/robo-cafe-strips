@@ -89,10 +89,10 @@
         (conn s23 s24) (conn s24 s23)
 
         ;; Dichiara che una locazione è una stanza
-        (floor s1) (floor s2) (floor s3) (floor s4) (floor s5) (floor s6)
-        (floor s7) (floor s8) (floor s9) (floor s10) (floor s11) (floor s12)
-        (floor s13) (floor s14) (floor s15) (floor s16) (floor s17) (floor s18)
-        (floor s19) (floor s20) (floor s21) (floor s22) (floor s23) (floor s24)
+        (room s1) (room s2) (room s3) (room s4) (room s5) (room s6)
+        (room s7) (room s8) (room s9) (room s10) (room s11) (room s12)
+        (room s13) (room s14) (room s15) (room s16) (room s17) (room s18)
+        (room s19) (room s20) (room s21) (room s22) (room s23) (room s24)
 
         ;; Dichiara gli oggetti di tipo ascensore e la loro posizione
     	(take_asc l1 s1)  (take_asc l2 s7)
@@ -156,7 +156,7 @@
         (not (have_money man2 money5)) (not (have_money man2 money6))
         (not (have_money man2 money7)) (not (have_money man2 money8))
 
-        (not (have_money robCafe1 money1)) (not (have_money robCafe1 money2))
+        (have_money robCafe1 money1) (not (have_money robCafe1 money2))
         (not (have_money robCafe1 money3)) (not (have_money robCafe1 money4))
         (not (have_money robCafe1 money5)) (not (have_money robCafe1 money6))
         (not (have_money robCafe1 money7)) (not (have_money robCafe1 money8))
