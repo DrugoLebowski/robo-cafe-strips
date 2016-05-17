@@ -204,7 +204,10 @@
 
     (:goal
         (and
-            (take_drink francesco the2)
+            (take_drink francesco the1)
+            (take_drink francesco coffee1)
+            (take_drink francesco coffee2)
+            (take_drink roberto the2)
             (take_drink roberto chocolate1)
         )
     )

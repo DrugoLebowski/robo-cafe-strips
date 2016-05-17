@@ -1,5 +1,5 @@
 (define (domain robotCafeX)
-	(:requirements Strips :equality :typing)
+	(:requirements :strips :equality :typing)
 	(:types Robot Deliever Coffe)
  	(:predicates
 
@@ -326,6 +326,7 @@
 				(at ?rob ?loc) (at ?man ?loc)
 				(orderer ?man ?rob ?drink)
 				(not (paid ?man ?rob ?drink))
+				(have_money ?man ?money) (not (have_money ?rob ?money))
 				(not (take_drink ?rob ?drink)) (not (take_drink ?man ?drink))
 	   )
 	   :effect (
@@ -348,6 +349,7 @@
 				(at ?rob ?loc) (at ?man ?loc)
 				(orderer ?man ?rob ?drink)
 				(not (paid ?man ?rob ?drink))
+				(have_money ?man ?money) (not (have_money ?rob ?money))
 				(take_drink ?rob ?drink) (not (take_drink ?man ?drink))
    		)
 	   :effect (
@@ -372,6 +374,7 @@
 				(not (available ?rob))
 				(not (delivered ?drink))
 				(orderer ?man ?rob ?drink)
+				(paid ?man ?rob ?drink)
 		)
 		:effect (
 			and
@@ -381,6 +384,7 @@
 				(available ?rob)
 				(not (lock ?man))
 				(not (orderer ?man ?rob ?drink))
+				(not (paid ?man ?rob ?drink))
 		)
 	)
 
@@ -402,6 +406,7 @@
 				(not (available ?rob))
 				(can_order ?rob)
 				(orderer ?man ?rob ?drink)
+				(not (paid ?man ?rob ?drink))
 				(lock ?man)
 		)
 	)
