@@ -2,11 +2,11 @@
     (:domain robotCafeX)
     (:objects
 
+
         ; TEAM : AgentRobotX
 		; MEMBER:
         ;     Alessandro Bigiotti Matr. 281812
 		;     Valerio Belli Matr. 283514
-
 
         ;; Definisco le stanze
         s1  s2  s3  s4  s5  s6
@@ -147,8 +147,8 @@
         (drink the2) (drink coffee2)
 
         ;; Dichiari chi ha i soldi (e quali soldi)
-        (not (have_money francesco money1)) (have_money francesco money2)
-        (not (have_money francesco money3)) (not (have_money francesco money4))
+        (have_money francesco money1) (have_money francesco money2)
+        (have_money francesco money3) (have_money francesco money4)
         (not (have_money francesco money5)) (not (have_money francesco money6))
         (not (have_money francesco money7)) (not (have_money francesco money8))
 
@@ -157,7 +157,7 @@
         (not (have_money roberto money5)) (not (have_money roberto money6))
         (not (have_money roberto money7)) (not (have_money roberto money8))
 
-        (have_money robot_x money1) (not (have_money robot_x money2))
+        (not (have_money robot_x money1)) (not (have_money robot_x money2))
         (not (have_money robot_x money3)) (not (have_money robot_x money4))
         (not (have_money robot_x money5)) (not (have_money robot_x money6))
         (not (have_money robot_x money7)) (not (have_money robot_x money8))
@@ -169,7 +169,7 @@
 
         ;; Dichiaro l'associazione distributore -> drink
         (have_drink ds1 coffee1)    (have_drink ds2 coffee2)
-        (have_drink ds1 chocolate1) (have_drink ds2 the1)
+        (have_drink ds1 the1) (have_drink ds2 chocolate1)
                                     (have_drink ds2 the2)
 
         ;; Dichiaro dove si trova il bancomat
@@ -204,7 +204,7 @@
         (have_pin francesco pin_mastercard)
         (have_pin roberto pin_visa)
 
-        (not (can_order francesco)) (can_order roberto)
+        (can_order francesco) (can_order roberto)
         (not (can_order robot_x))
 
         (available robot_x)
